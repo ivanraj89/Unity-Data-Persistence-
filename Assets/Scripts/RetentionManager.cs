@@ -2,51 +2,53 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System.IO;    
+using System.IO;
+using TMPro;
 
 public class RetentionManager : MonoBehaviour
 {
     public static RetentionManager Instance;
-    [System.Serializable]
-    class SaveName
+    public int playerScore;
+    public TMP_InputField playerName;
+    public string savedPlayerName;
+    public int score; 
+    void Awake()
     {
-        public InputField inputName; 
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+        
+    }
+    [System.Serializable]
+    class SaveData
+    {
+        public string savedPlayerName;
+        public int playerScore;
     }
 
-    public void SaveInput()
+    public void SaveNamenScore()
     {
-        SaveName data = new SaveName();
-        data.inputName = inputName;
-        string json = JsonUtility.ToJson(data);
+        SaveData myData = new SaveData();
+        savedPlayerName = playerName.text;
+        myData.savedPlayerName = savedPlayerName;
+        myData.playerScore = playerScore;
+        string json = JsonUtility.ToJson(myData);
         File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
     }
 
-    public void LoadName()
+    public void LoadNamenScore()
     {
         string path = Application.persistentDataPath + "/savefile.json";
         if (File.Exists(path))
         {
             string json = File.ReadAllText(path);
-            SaveName data = JsonUtility.FromJson<SaveName>(json);
-
-            inputName = data.inputName;
+            SaveData myData = JsonUtility.FromJson<SaveData>(json);
+            savedPlayerName = myData.savedPlayerName;
+            playerScore = myData.playerScore;
         }
-    }
-
-    private InputField inputName;
-    // Start is called before the first frame update
-    void Awake()
-    {
-        if(Instance == null)
-        {
-            DontDestroyOnLoad(gameObject);
-            Instance = this;
-        }
-        else if(Instance != this)
-        {
-            Destroy(gameObject);
-        }
-        
     }
 
 }

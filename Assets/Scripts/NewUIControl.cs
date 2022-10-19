@@ -23,6 +23,7 @@ public class NewUIControl : MonoBehaviour
 
     public void StartScene()
     {
+        //RetentionManager.Instance.SaveNamenScore();
         SceneManager.LoadScene(1);
     }
 

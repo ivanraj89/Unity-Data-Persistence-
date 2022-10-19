@@ -19,10 +19,11 @@ public class MainManager : MonoBehaviour
     
     private bool m_GameOver = false;
 
-    
+
     // Start is called before the first frame update
     void Start()
     {
+        SetScore();
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
         
@@ -56,9 +57,19 @@ public class MainManager : MonoBehaviour
         }
         else if (m_GameOver)
         {
+            if(m_Points > 0 && m_Points > RetentionManager.Instance.playerScore)
+            {
+                RetentionManager.Instance.SaveNamenScore();
+                savedText.text = $"Highscore : {RetentionManager.Instance.savedPlayerName} : {m_Points}";
+                
+            }
+
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                RetentionManager.Instance.LoadNamenScore();
+                savedText.text = $"Highscore : {RetentionManager.Instance.savedPlayerName} : {RetentionManager.Instance.playerScore}";
+
             }
         }
     }
@@ -74,5 +85,10 @@ public class MainManager : MonoBehaviour
         m_GameOver = true;
         GameOverText.SetActive(true);
     }
-   
+
+    public void SetScore()
+    {
+        RetentionManager.Instance.score = m_Points;
+    }
+
 }
