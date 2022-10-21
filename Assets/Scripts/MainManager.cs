@@ -21,9 +21,14 @@ public class MainManager : MonoBehaviour
 
 
     // Start is called before the first frame update
+    void Awake()
+    {
+        RetentionManager.Instance.LoadNamenScore();
+        savedText.text = $"Highscore : {RetentionManager.Instance.savedPlayerName} : {RetentionManager.Instance.playerScore}";
+    }
     void Start()
     {
-        SetScore();
+        //SetScore();
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
         
@@ -57,19 +62,12 @@ public class MainManager : MonoBehaviour
         }
         else if (m_GameOver)
         {
-            if(m_Points > 0 && m_Points > RetentionManager.Instance.playerScore)
-            {
-                RetentionManager.Instance.SaveNamenScore();
-                savedText.text = $"Highscore : {RetentionManager.Instance.savedPlayerName} : {m_Points}";
-                
-            }
+            SetScore();
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-                RetentionManager.Instance.LoadNamenScore();
-                savedText.text = $"Highscore : {RetentionManager.Instance.savedPlayerName} : {RetentionManager.Instance.playerScore}";
-
+                
             }
         }
     }
@@ -88,7 +86,25 @@ public class MainManager : MonoBehaviour
 
     public void SetScore()
     {
-        RetentionManager.Instance.score = m_Points;
+        if (RetentionManager.Instance.playerScore == 0)
+        {
+            RetentionManager.Instance.playerScore = m_Points;
+            RetentionManager.Instance.SaveNamenScore();
+
+            savedText.text = $"Highscore : {RetentionManager.Instance.savedPlayerName} : {m_Points}";
+        }
+        if (m_Points > RetentionManager.Instance.playerScore)
+        {
+            RetentionManager.Instance.playerScore = m_Points;
+            RetentionManager.Instance.SaveNamenScore();
+
+            savedText.text = $"Highscore : {RetentionManager.Instance.savedPlayerName} : {m_Points}";
+
+        }
+        else if (m_Points < RetentionManager.Instance.playerScore)
+        {
+            savedText.text = $"You didnt make the Highscore, better luck next round! ";
+        }
     }
 
 }
