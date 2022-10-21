@@ -21,14 +21,13 @@ public class MainManager : MonoBehaviour
 
 
     // Start is called before the first frame update
-    void Awake()
+    void Awake() //take note of this, you'd want to load the score saved after gameover and display the text before anything else
     {
         RetentionManager.Instance.LoadNamenScore();
         savedText.text = $"Highscore : {RetentionManager.Instance.savedPlayerName} : {RetentionManager.Instance.playerScore}";
     }
     void Start()
     {
-        //SetScore();
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
         
@@ -62,7 +61,7 @@ public class MainManager : MonoBehaviour
         }
         else if (m_GameOver)
         {
-            SetScore();
+            SetScore(); //to call method written below 
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
@@ -86,22 +85,22 @@ public class MainManager : MonoBehaviour
 
     public void SetScore()
     {
-        if (RetentionManager.Instance.playerScore == 0)
+        if (RetentionManager.Instance.playerScore == 0) //this is for your first loop when there isnt a score saved 
         {
-            RetentionManager.Instance.playerScore = m_Points;
+            RetentionManager.Instance.playerScore = m_Points; //store the innitial points you got into the player score variable you made
+            RetentionManager.Instance.SaveNamenScore(); // proceed to save that first score and load it on void awake above
+
+            savedText.text = $"Highscore : {RetentionManager.Instance.savedPlayerName} : {m_Points}"; //this will be your first highscore
+        }
+        if (m_Points > RetentionManager.Instance.playerScore) //once your previous high score has been beaten, this will come into play
+        {
+            RetentionManager.Instance.playerScore = m_Points; //store that score into player score and proceed to save it as the new highscore which will load at awake
             RetentionManager.Instance.SaveNamenScore();
 
             savedText.text = $"Highscore : {RetentionManager.Instance.savedPlayerName} : {m_Points}";
-        }
-        if (m_Points > RetentionManager.Instance.playerScore)
-        {
-            RetentionManager.Instance.playerScore = m_Points;
-            RetentionManager.Instance.SaveNamenScore();
-
-            savedText.text = $"Highscore : {RetentionManager.Instance.savedPlayerName} : {m_Points}";
 
         }
-        else if (m_Points < RetentionManager.Instance.playerScore)
+        else if (m_Points < RetentionManager.Instance.playerScore) //added this in incase the score is lesser than your previous highscore 
         {
             savedText.text = $"You didnt make the Highscore, better luck next round! ";
         }

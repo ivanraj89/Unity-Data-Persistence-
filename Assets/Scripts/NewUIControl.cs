@@ -23,14 +23,13 @@ public class NewUIControl : MonoBehaviour
 
     public void StartScene()
     {
-        //RetentionManager.Instance.SaveNamenScore();
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(1); //link this to your start button in the first scene
     }
 
     public void ExitGame()
     {
 #if UNITY_EDITOR
-        EditorApplication.ExitPlaymode();
+        EditorApplication.ExitPlaymode(); 
 #else
         Application.Quit();
 #endif
